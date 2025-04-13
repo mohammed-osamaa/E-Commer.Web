@@ -28,6 +28,8 @@ namespace E_Commer.Web
 
             app.MapControllers();
 
+            app.UseAuthorization();
+
             app.Run();
         }
     }
