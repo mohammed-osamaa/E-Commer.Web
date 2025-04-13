@@ -1,0 +1,6 @@
+@E_Commer.Web_HostAddress = http://localhost:5235
+
+GET {{E_Commer.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
