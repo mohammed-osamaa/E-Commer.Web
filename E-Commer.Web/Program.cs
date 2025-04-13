@@ -1,4 +1,9 @@
 
+using DomainLayer.Contracts;
+using Microsoft.EntityFrameworkCore;
+using Persistance;
+using Persistance.Data;
+
 namespace E_Commer.Web
 {
     public class Program
@@ -11,11 +16,17 @@ namespace E_Commer.Web
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(); 
+            builder.Services.AddSwaggerGen();
 
+            builder.Services.AddDbContext<StoreDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddScoped<IDataSeeding, DataSeeding>();
             #endregion
 
             var app = builder.Build();
+
+            var scope = app.Services.CreateScope();
+            scope.ServiceProvider.GetRequiredService<IDataSeeding>().SeedData();    
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -27,6 +38,8 @@ namespace E_Commer.Web
             app.UseHttpsRedirection();
 
             app.MapControllers();
+
+            app.UseAuthorization();
 
             app.Run();
         }
