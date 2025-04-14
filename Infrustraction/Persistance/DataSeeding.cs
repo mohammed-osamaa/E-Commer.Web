@@ -23,21 +23,21 @@ namespace Persistance
                 }
                 if (!_dbContext.ProductBrands.Any())
                 {
-                    string jsonData = File.ReadAllText("Data/SeedData.json");
+                    string jsonData = File.ReadAllText("..\\Infrustraction\\Persistance\\Data\\DataSeed\\brands.json");
                     var brands = JsonSerializer.Deserialize<List<ProductBrand>>(jsonData);
                     if(brands is not null && brands.Any())
                         _dbContext.ProductBrands.AddRange(brands);
                 }
                 if (!_dbContext.ProductTypes.Any())
                 {
-                    string jsonData = File.ReadAllText("Data/SeedData.json");
+                    string jsonData = File.ReadAllText("..\\Infrustraction\\Persistance\\Data\\DataSeed\\types.json");
                     var types = JsonSerializer.Deserialize<List<ProductType>>(jsonData);
                     if (types is not null && types.Any())
                         _dbContext.ProductTypes.AddRange(types);
                 }
                 if (!_dbContext.Products.Any())
                 {
-                    string jsonData = File.ReadAllText("Data/SeedData.json");
+                    string jsonData = File.ReadAllText("..\\Infrustraction\\Persistance\\Data\\DataSeed\\products.json");
                     var products = JsonSerializer.Deserialize<List<Product>>(jsonData);
                     if (products is not null && products.Any())
                         _dbContext.Products.AddRange(products);
