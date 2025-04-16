@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Persistance.ImplementionRepositories.GenericRepository
+namespace Persistance.GenericRepository
 {
     public class GenericRepository<TEntity , TKey>(StoreDbContext _dbContext) : IGenericRepository<TEntity, TKey> where TEntity : BaseEntity<TKey>
     {
