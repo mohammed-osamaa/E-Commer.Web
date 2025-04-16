@@ -3,12 +3,13 @@ using DomainLayer.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 using Persistance.Data;
+using System.Threading.Tasks;
 
 namespace E_Commer.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,7 @@ namespace E_Commer.Web
             var app = builder.Build();
 
             var scope = app.Services.CreateScope();
-            scope.ServiceProvider.GetRequiredService<IDataSeeding>().SeedData();    
+            await scope.ServiceProvider.GetRequiredService<IDataSeeding>().SeedDataAsync();    
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
