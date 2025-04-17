@@ -3,6 +3,7 @@ using DomainLayer.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 using Persistance.Data;
+using Persistance.Repositories;
 using System.Threading.Tasks;
 
 namespace E_Commer.Web
@@ -22,6 +23,7 @@ namespace E_Commer.Web
             builder.Services.AddDbContext<StoreDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddScoped<IDataSeeding, DataSeeding>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             #endregion
 
             var app = builder.Build();
