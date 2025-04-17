@@ -1,8 +1,14 @@
 
+using AutoMapper;
 using DomainLayer.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 using Persistance.Data;
+using Persistance.Repositories;
+using Presentation.Controllers;
+using Service;
+using Service.MappingProfiles;
+using ServiceAbstraction;
 using System.Threading.Tasks;
 
 namespace E_Commer.Web
@@ -15,13 +21,17 @@ namespace E_Commer.Web
 
             #region Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddApplicationPart(typeof(ProductsController).Assembly);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
+             
             builder.Services.AddDbContext<StoreDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddScoped<IDataSeeding, DataSeeding>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
+            builder.Services.AddScoped<IServiceManager, ServiceManger>();
             #endregion
 
             var app = builder.Build();
@@ -37,6 +47,7 @@ namespace E_Commer.Web
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.MapControllers();
 
