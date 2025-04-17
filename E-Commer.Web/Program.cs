@@ -1,9 +1,11 @@
 
+using AutoMapper;
 using DomainLayer.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 using Persistance.Data;
 using Persistance.Repositories;
+using Service.MappingProfiles;
 using System.Threading.Tasks;
 
 namespace E_Commer.Web
@@ -24,6 +26,8 @@ namespace E_Commer.Web
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddScoped<IDataSeeding, DataSeeding>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
             #endregion
 
             var app = builder.Build();
