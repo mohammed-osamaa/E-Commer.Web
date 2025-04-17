@@ -47,6 +47,7 @@ namespace E_Commer.Web
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.MapControllers();
 
