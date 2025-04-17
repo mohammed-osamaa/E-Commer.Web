@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Persistance;
 using Persistance.Data;
 using Persistance.Repositories;
+using Service;
 using Service.MappingProfiles;
+using ServiceAbstraction;
 using System.Threading.Tasks;
 
 namespace E_Commer.Web
@@ -28,6 +30,7 @@ namespace E_Commer.Web
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
+            builder.Services.AddScoped<IServiceManager, ServiceManger>();
             #endregion
 
             var app = builder.Build();
