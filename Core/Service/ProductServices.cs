@@ -22,7 +22,9 @@ namespace Service
             var Repo = _unitOfWork.GetRepository<Product, int>();
             var products = await Repo.GetAllAsync(specification);
             var Data = _mapper.Map<IEnumerable<Product>,IEnumerable<ProductDto>>(products);
-            return new ProductPaginationData<ProductDto>(queryParameters.PageIndex , Data.Count(),0, Data);
+            // Get total count of products
+            var totalCount = await Repo.CountAsync(new ProductCountSpecification(queryParameters));
+            return new ProductPaginationData<ProductDto>(queryParameters.PageIndex , Data.Count(),totalCount, Data);
         }
 
         public async Task<IEnumerable<BrandDto>> GetBrandsAsync()

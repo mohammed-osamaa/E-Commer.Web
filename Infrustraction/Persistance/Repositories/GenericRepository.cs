@@ -28,7 +28,13 @@ namespace Persistance.GenericRepository
         {
             var query = SpecificationCreation.CreateQuery(_dbContext.Set<TEntity>(), specifications);
             return await query.FirstOrDefaultAsync();
-        } 
+        }
+
+        public Task<int> CountAsync(ISpecifications<TEntity, TKey> specifications)
+        {
+            var query = SpecificationCreation.CreateQuery(_dbContext.Set<TEntity>(), specifications);
+            return query.CountAsync();
+        }
         #endregion
     }
 }
