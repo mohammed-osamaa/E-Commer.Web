@@ -26,6 +26,9 @@ namespace Persistance
             if (specifications.Includes != null && specifications.Includes.Count > 0)
                 query = specifications.Includes.Aggregate(query ,(CurrentQuery , Include) => CurrentQuery.Include(Include));
 
+            if (specifications.IsPagingEnabled)
+                query = query.Skip(specifications.Skip).Take(specifications.Take);
+
             return query;
         }
 

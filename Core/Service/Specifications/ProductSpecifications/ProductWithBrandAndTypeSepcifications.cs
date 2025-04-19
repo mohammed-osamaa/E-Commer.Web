@@ -38,7 +38,7 @@ namespace Service.Specifications.ProductSpecifications
                     AddOrderBy(P => P.Id);
                     break;
             }
-
+            ApplyPaging(queryParameters.PageSize , queryParameters.PageIndex);
         }
         public ProductWithBrandAndTypeSepcifications(int id) : base(P=>P.Id == id)
         {
