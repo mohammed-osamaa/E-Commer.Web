@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using DomainLayer.Contracts;
 using DomainLayer.Models;
+using Service.Specifications.ProductSpecifications;
 using ServiceAbstraction;
+using Shared;
 using Shared.DTOS;
 using System;
 using System.Collections.Generic;
@@ -13,12 +15,16 @@ namespace Service
 {
     public class ProductServices(IUnitOfWork _unitOfWork, IMapper _mapper ) : IProductServices
     {
-        public async Task<IEnumerable<ProductDto>> GetProductsAsync()
+        public async Task<ProductPaginationData<ProductDto>> GetProductsAsync(ProductQueryParameters queryParameters)
         {
+            // Get all products With Brand and Type
+            var specification = new ProductWithBrandAndTypeSepcifications(queryParameters);
             var Repo = _unitOfWork.GetRepository<Product, int>();
-            var products = await Repo.GetAllAsync();
-            var productDtos = _mapper.Map<IEnumerable<Product>,IEnumerable<ProductDto>>(products);
-            return productDtos;
+            var products = await Repo.GetAllAsync(specification);
+            var Data = _mapper.Map<IEnumerable<Product>,IEnumerable<ProductDto>>(products);
+            // Get total count of products
+            var totalCount = await Repo.CountAsync(new ProductCountSpecification(queryParameters));
+            return new ProductPaginationData<ProductDto>(queryParameters.PageIndex , Data.Count(),totalCount, Data);
         }
 
         public async Task<IEnumerable<BrandDto>> GetBrandsAsync()
@@ -29,7 +35,9 @@ namespace Service
 
         public async Task<ProductDto> GetProductByIdAsync(int id)
         {
-            var Product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(id);
+            // Get product by id With Brand and Type
+            var specification = new ProductWithBrandAndTypeSepcifications(id);
+            var Product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(specification);
             if (Product is not null)
                 return _mapper.Map<Product, ProductDto>(Product);
             return null!;
