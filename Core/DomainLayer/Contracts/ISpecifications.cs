@@ -16,5 +16,7 @@ namespace DomainLayer.Contracts
         Expression<Func<TEntity, bool>>? Criteria { get; }
         // Include Related Data
         List<Expression<Func<TEntity, object>>> Includes { get; }
+        public Expression<Func<TEntity, object>>? OrderBy { get; }
+        public Expression<Func<TEntity, object>>? OrderByDescending { get; }
     }
 }

@@ -15,12 +15,15 @@ namespace Persistance
         public static IQueryable<TEntity> CreateQuery<TEntity, TKey>(IQueryable<TEntity> query, ISpecifications<TEntity, TKey> specifications) where TEntity : BaseEntity<TKey>
         {
             if (specifications.Criteria != null)
-            {
                 query = query.Where(specifications.Criteria);
-            }
+
+            if(specifications.OrderBy != null)
+                query = query.OrderBy(specifications.OrderBy);
+            if (specifications.OrderByDescending != null)
+                query = query.OrderByDescending(specifications.OrderByDescending);
             //foreach (var include in specifications.Includes)
             //    query =query.Include(include);
-            if(specifications.Includes != null && specifications.Includes.Count > 0)
+            if (specifications.Includes != null && specifications.Includes.Count > 0)
                 query = specifications.Includes.Aggregate(query ,(CurrentQuery , Include) => CurrentQuery.Include(Include));
 
             return query;
