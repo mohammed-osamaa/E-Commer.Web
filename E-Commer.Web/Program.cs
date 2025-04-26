@@ -1,6 +1,7 @@
 
 using AutoMapper;
 using DomainLayer.Contracts;
+using E_Commer.Web.CustomExceptionHandlerMiddleware;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 using Persistance.Data;
@@ -40,6 +41,9 @@ namespace E_Commer.Web
             await scope.ServiceProvider.GetRequiredService<IDataSeeding>().SeedDataAsync();    
 
             // Configure the HTTP request pipeline.
+
+            app.UseMiddleware<CustomExceptiomHandlerMiddleware>();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
