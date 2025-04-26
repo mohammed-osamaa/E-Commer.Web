@@ -1,4 +1,5 @@
-﻿using Shared.ErrorModels;
+﻿using DomainLayer.Exceptions;
+using Shared.ErrorModels;
 
 namespace E_Commer.Web.CustomExceptionHandlerMiddleware
 {
@@ -22,13 +23,17 @@ namespace E_Commer.Web.CustomExceptionHandlerMiddleware
             {
                 _logger.LogError(ex, "Something went Wrong.");
                 // Set Status Code
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                context.Response.StatusCode = ex switch
+                {
+                    NotFoundException => StatusCodes.Status404NotFound,
+                    _ => StatusCodes.Status500InternalServerError
+                };
                 // Set Content Type
                 context.Response.ContentType = "application/json";
                 // Set Response Body
                 var response = new ResponseToReturn
                 {
-                    StatusCode = StatusCodes.Status500InternalServerError ,
+                    StatusCode = context.Response.StatusCode,
                     ErrorMessage = ex.Message
                 };
 
