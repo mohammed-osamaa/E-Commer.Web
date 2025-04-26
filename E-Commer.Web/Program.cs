@@ -2,6 +2,8 @@
 using AutoMapper;
 using DomainLayer.Contracts;
 using E_Commer.Web.CustomExceptionHandlerMiddleware;
+using E_Commer.Web.Fatories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 using Persistance.Data;
@@ -10,6 +12,7 @@ using Presentation.Controllers;
 using Service;
 using Service.MappingProfiles;
 using ServiceAbstraction;
+using Shared.ErrorModels;
 using System.Threading.Tasks;
 
 namespace E_Commer.Web
@@ -28,11 +31,17 @@ namespace E_Commer.Web
              
             builder.Services.AddDbContext<StoreDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
             builder.Services.AddScoped<IDataSeeding, DataSeeding>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
             builder.Services.AddScoped<IServiceManager, ServiceManger>();
+            builder.Services.Configure<ApiBehaviorOptions>(Options =>
+            {
+                Options.InvalidModelStateResponseFactory = ApiResponseFactory.GenerateValidationErrorsResponse;
+
+            });
             #endregion
 
             var app = builder.Build();
