@@ -2,6 +2,7 @@
 using AutoMapper;
 using DomainLayer.Contracts;
 using E_Commer.Web.CustomExceptionHandlerMiddleware;
+using E_Commer.Web.Extensions;
 using E_Commer.Web.Fatories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,32 +27,20 @@ namespace E_Commer.Web
             #region Add services to the container.
 
             builder.Services.AddControllers().AddApplicationPart(typeof(ProductsController).Assembly);
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-             
-            builder.Services.AddDbContext<StoreDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddScoped<IDataSeeding, DataSeeding>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
-            builder.Services.AddScoped<IServiceManager, ServiceManger>();
-            builder.Services.Configure<ApiBehaviorOptions>(Options =>
-            {
-                Options.InvalidModelStateResponseFactory = ApiResponseFactory.GenerateValidationErrorsResponse;
-
-            });
+            builder.Services.AddSwaggerServices(); // Swagger Registerations
+            builder.Services.AddInfrastructureRegisterations(builder.Configuration); // Infrastructure Registerations
+            builder.Services.AddApplicationServices(); // Services Registerations
+            builder.Services.AddApiConfigurations(); // API Configurations
             #endregion
 
             var app = builder.Build();
 
-            var scope = app.Services.CreateScope();
-            await scope.ServiceProvider.GetRequiredService<IDataSeeding>().SeedDataAsync();    
+            await app.SeedDataAsync(); // Seed Data
 
             // Configure the HTTP request pipeline.
 
-            app.UseMiddleware<CustomExceptiomHandlerMiddleware>();
+            app.UseCustomExceptionHandler(); // Custom Exception Handler Middleware
 
             if (app.Environment.IsDevelopment())
             {
