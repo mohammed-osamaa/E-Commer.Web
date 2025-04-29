@@ -10,6 +10,7 @@ namespace E_Commer.Web.Extensions
         {
             var scope = app.Services.CreateScope();
             await scope.ServiceProvider.GetRequiredService<IDataSeeding>().SeedDataAsync();
+            await scope.ServiceProvider.GetRequiredService<IDataSeeding>().IdentitySeedDateAsync();
         }
         public static IApplicationBuilder UseCustomExceptionHandler(this IApplicationBuilder app)
         {

@@ -1,7 +1,10 @@
 ﻿using DomainLayer.Contracts;
+using DomainLayer.Models.IdentityModels;
 using DomainLayer.Models.ProductModule;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistance.Data;
+using Persistance.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +14,51 @@ using System.Threading.Tasks;
 
 namespace Persistance
 {
-    public class DataSeeding(StoreDbContext _dbContext) : IDataSeeding
+    public class DataSeeding(StoreDbContext _dbContext 
+        , UserManager<ApplicationUser> _userManager
+        , RoleManager<IdentityRole> _roleManager
+        , StoreIdentityDbContext _storeIdentityDbContext) : IDataSeeding
     {
+        public async Task IdentitySeedDateAsync()
+        {
+            try
+            {
+                if (!_roleManager.Roles.Any())
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("Admin"));
+                    await _roleManager.CreateAsync(new IdentityRole("SuperAdmin"));
+                }
+                if (!_userManager.Users.Any())
+                {
+                    var User01 = new ApplicationUser
+                    {
+                        Email = "mohamed@gmail.com",
+                        DisplayName = "Mohamed Osamaa",
+                        UserName = "mohamedOsamaa",
+                        PhoneNumber = "01012345678",
+                    };
+                    var User02 = new ApplicationUser
+                    {
+                        Email = "Isla@gmail.com",
+                        DisplayName = "Islam Osamaa",
+                        UserName = "IslamOsamaa",
+                        PhoneNumber = "01012345678",
+                    };
+
+                    await _userManager.CreateAsync(User01, "Admin01@");
+                    await _userManager.CreateAsync(User02, "Admin02@");
+
+                    await _userManager.AddToRoleAsync(User01, "Admin");
+                    await _userManager.AddToRoleAsync(User02, "SuperAdmin");
+                }
+                await _storeIdentityDbContext.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                // Handle exceptions (e.g., log the error)
+            }
+        }
+
         public async Task SeedDataAsync()
         {
             try

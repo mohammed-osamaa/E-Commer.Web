@@ -1,4 +1,5 @@
-﻿using DomainLayer.Exceptions;
+﻿using Azure;
+using DomainLayer.Exceptions;
 using Shared.ErrorModels;
 
 namespace E_Commer.Web.CustomExceptionHandlerMiddleware
@@ -29,23 +30,28 @@ namespace E_Commer.Web.CustomExceptionHandlerMiddleware
 
         private static async Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
+            // Set Response Body
+            var response = new ResponseToReturn
+            {
+                ErrorMessage = ex.Message
+            };
             // Set Status Code
             context.Response.StatusCode = ex switch
             {
                 NotFoundException => StatusCodes.Status404NotFound,
+                UnAuthorizedException => StatusCodes.Status401Unauthorized,
+                BadRequestException badRequestException => GetBadRequestErrors(badRequestException ,response),
                 _ => StatusCodes.Status500InternalServerError
             };
-            // Set Content Type
-            context.Response.ContentType = "application/json";
-            // Set Response Body
-            var response = new ResponseToReturn
-            {
-                StatusCode = context.Response.StatusCode,
-                ErrorMessage = ex.Message
-            };
 
-            // Serialize the response to JSON
+            // Serialize the response to JSON And Handle the Content Type (Application/Json )
             await context.Response.WriteAsJsonAsync(response);
+        }
+
+        private static int GetBadRequestErrors(BadRequestException badRequestException , ResponseToReturn response)
+        {
+            response.Errors = badRequestException.Errors;
+            return StatusCodes.Status400BadRequest;
         }
 
         private static async Task ProcessNotFoundEndpoint(HttpContext context)
