@@ -17,5 +17,17 @@ namespace ServiceAbstraction
         // IdentityDto => (Email , DisplayName And Token)
         // LoginDto => (Email and Password)
         // RegisterDto => (Email, Username, PhoneNumber, DisplayName And Password) 
+
+        // I Check If Email is existed or not 
+        Task<bool> CheckEmailExistsAsync(string email);
+
+        // I Get Current User Address => By User 
+        Task<AddressDto> GetCurrentAddressAsync(string email); // get Email by User No Take Email Parameter
+
+        // I Update Address 
+        Task<AddressDto> UpdateAddressAsync(string email , AddressDto updatedAddress);
+        // I Get User
+        Task<UserDto> GetUserAsync(string email);
+
     }
 }

@@ -19,6 +19,7 @@ namespace Service.MappingProfiles
                 .ForMember(dest => dest.Token, opt => opt.Ignore())
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.DisplayName));
+            CreateMap<Address, AddressDto>().ReverseMap();
         }
     }
 }
