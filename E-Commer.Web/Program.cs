@@ -32,6 +32,8 @@ namespace E_Commer.Web
             builder.Services.AddInfrastructureRegisterations(builder.Configuration); // Infrastructure Registerations
             builder.Services.AddApplicationServices(); // Services Registerations
             builder.Services.AddApiConfigurations(); // API Configurations
+            builder.Services.AddJWTConfigs(builder.Configuration); // JWT Configurations
+
             #endregion
 
             var app = builder.Build();
@@ -53,6 +55,7 @@ namespace E_Commer.Web
 
             app.MapControllers();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.Run();
